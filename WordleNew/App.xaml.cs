@@ -4,12 +4,11 @@ namespace WordleNew
 {
     public partial class App : Application
     {
-        private bool isDarkMode = false; // Default to light mode
+        private bool isDarkMode = false;
 
         public App()
         {
             InitializeComponent();
-            // Set the initial theme
             ApplyTheme();
         }
 
@@ -20,7 +19,7 @@ namespace WordleNew
 
         public void ToggleTheme()
         {
-            isDarkMode = !isDarkMode; // Toggle the mode
+            isDarkMode = !isDarkMode;
             ApplyTheme();
         }
 
