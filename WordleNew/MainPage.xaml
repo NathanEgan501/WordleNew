@@ -2,12 +2,16 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="WordleNew.MainPage"
-             BackgroundColor="White">
+             BackgroundColor="{DynamicResource BackgroundColor}">
 
     <StackLayout Padding="20">
-        <Label Text="Wordle Game"
-               FontSize="32"
+        <Label Text="Wordle"
+               FontSize="{DynamicResource MediumFontSize}"
+               TextColor="{DynamicResource TextColor}"
                HorizontalOptions="Center" />
+
+        <Button Text="Settings"
+                Clicked="OnSettingsButtonClicked" />
 
         <Label x:Name="MessageLabel"
                FontSize="18"

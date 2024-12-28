@@ -64,4 +64,34 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Update="LightTheme.xaml.cs">
+	    <DependentUpon>LightTheme.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="DarkTheme.xaml.cs">
+	    <DependentUpon>DarkTheme.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="FontSizes.xaml.cs">
+	    <DependentUpon>FontSizes.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="SettingsPage.xaml.cs">
+	    <DependentUpon>SettingsPage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="LightTheme.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="DarkTheme.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="FontSizes.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="SettingsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
 </Project>
