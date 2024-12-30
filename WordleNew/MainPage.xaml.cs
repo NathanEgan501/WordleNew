@@ -1,12 +1,11 @@
-﻿// g00435730 Nathan Egan
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.Maui.Controls;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Linq.Expressions;
 using System.Diagnostics;
-using System.Reflection;
+using System.IO;
+using System.Text.Json;
 
 namespace WordleNew
 {
@@ -16,11 +15,18 @@ namespace WordleNew
         private int attempts;
         private List<string> wordList = new List<string>();
         private int currentAttempt;
+        private const string PlayerFileName = "player.txt";
 
         public MainPage()
         {
             InitializeComponent();
             LoadWordList();
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            LoadPlayer();
         }
 
         private async void OnSettingsButtonClicked(object sender, EventArgs e)
@@ -62,6 +68,45 @@ namespace WordleNew
             }
         }
 
+        private async void LoadPlayer()
+        {
+            string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), PlayerFileName);
+            Console.WriteLine($"Checking for player file at: {filePath}");
+
+            if (File.Exists(filePath))
+            {
+                string playerName = File.ReadAllText(filePath);
+                MessageLabel.Text = $"Welcome back, {playerName}! Guess the word!";
+            }
+            else
+            {
+                Console.WriteLine("Player file does not exist. Prompting for name.");
+                await PromptForPlayerName();
+            }
+        }
+
+        private async Task PromptForPlayerName()
+        {
+            string playerName = await DisplayPromptAsync("New Player", "Please enter your name:", "OK", "Cancel", null, -1);
+
+            if (!string.IsNullOrWhiteSpace(playerName))
+            {
+                SavePlayerName(playerName);
+                MessageLabel.Text = $"Welcome, {playerName}! Guess the word!";
+            }
+            else
+            {
+                MessageLabel.Text = "Welcome! Guess the word!";
+            }
+        }
+
+        private void SavePlayerName(string playerName)
+        {
+            string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), PlayerFileName);
+            File.WriteAllText(filePath, playerName);
+            Console.WriteLine($"Player name '{playerName}' saved to file.");
+        }
+
         private void StartNewGame()
         {
             currentAttempt = 0;
@@ -74,6 +119,11 @@ namespace WordleNew
 
         private string GetRandomWord()
         {
+            if (wordList.Count == 0)
+            {
+                throw new InvalidOperationException("Word list is empty. Cannot select a random word.");
+            }
+
             Random random = new Random();
             int index = random.Next(wordList.Count);
             string selectedWord = wordList[index].ToLower();
@@ -87,9 +137,20 @@ namespace WordleNew
             {
                 for (int j = 0; j < 5; j++)
                 {
-                    var label = (Label)GuessGrid.Children[i * 5 + j];
-                    label.Text = string.Empty;
-                    label.TextColor = Colors.Black;
+                    int index = i * 5 + j;
+                    if (index < GuessGrid.Children.Count)
+                    {
+                        var label = (Label)GuessGrid.Children[index];
+                        if (label != null)
+                        {
+                            label.Text = string.Empty;
+                            label.TextColor = Colors.Black;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Index out of bounds: {index}");
+                    }
                 }
             }
         }
@@ -116,13 +177,12 @@ namespace WordleNew
 
             if (guess == secretWord)
             {
-                MessageLabel.Text = "Congratulations! You've guessed the word!";
+                EndGame(secretWord, currentAttempt);
             }
             else if (currentAttempt >= attempts)
             {
-                MessageLabel.Text = "Game Over! The word was: " + secretWord;
+                EndGame(secretWord, currentAttempt);
             }
-
         }
 
         private void DisplayGuess(string guess)
@@ -161,6 +221,60 @@ namespace WordleNew
             }
         }
 
-    }
+        private void EndGame(string correctWord, int guesses)
+        {
+            SaveGameAttempt(correctWord, guesses);
 
+            if (guesses <= attempts)
+            {
+                DisplayAlert("Congratulations!", $"You've guessed the word '{correctWord}' in {guesses} attempts!", "OK");
+            }
+            else
+            {
+                DisplayAlert("Game Over", $"The correct word was: {correctWord}. You took {guesses} attempts.", "OK");
+            }
+
+            StartNewGame();
+        }
+
+        private void SaveGameAttempt(string correctWord, int guesses)
+        {
+            var gameAttempt = new GameAttempt(DateTime.Now, correctWord, guesses);
+            var gameAttempts = LoadGameAttempts();
+            gameAttempts.Add(gameAttempt);
+
+            string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "gameHistory.json");
+            string json = JsonSerializer.Serialize(gameAttempts);
+            File.WriteAllText(filePath, json);
+        }
+
+        private List<GameAttempt> LoadGameAttempts()
+        {
+            string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "gameHistory.json");
+            if (File.Exists(filePath))
+            {
+                string json = File.ReadAllText(filePath);
+                return JsonSerializer.Deserialize<List<GameAttempt>>(json) ?? new List<GameAttempt>();
+            }
+            return new List<GameAttempt>();
+        }
+
+        private async void OnViewHistoryClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new HistoryPage());
+        }
+
+        private void OnStartNewGameClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                StartNewGame();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error starting new game: {ex.Message}");
+                DisplayAlert("Error", "An error occurred while starting a new game. Please try again.", "OK");
+            }
+        }
+    }
 }

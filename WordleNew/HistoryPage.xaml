@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WordleNew.HistoryPage"
+             BackgroundColor="{DynamicResource BackgroundColor}">
+
+    <StackLayout Padding="20">
+        <Label Text="Game History" TextColor="{DynamicResource TextColor}" FontSize="{DynamicResource MediumFontSize}" HorizontalOptions="Center" />
+        <ListView x:Name="HistoryListView">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Padding="10">
+                            <Label Text="{Binding Timestamp}" FontSize="18" />
+                            <Label Text="{Binding CorrectWord}" FontSize="18" />
+                            <Label Text="{Binding Guesses}" FontSize="18" />
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+</ContentPage>

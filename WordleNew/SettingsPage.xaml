@@ -2,13 +2,15 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="WordleNew.SettingsPage"
-             BackgroundColor="White">
+             BackgroundColor="{DynamicResource BackgroundColor}">
 
     <StackLayout Padding="20">
-        <Label Text="Settings" FontSize="32" HorizontalOptions="Center" />
-        <Label Text="Select Theme" FontSize="18" />
+        <Label Text="Settings" TextColor="{DynamicResource TextColor}" FontSize="{DynamicResource MediumFontSize}" HorizontalOptions="Center" />
+
+        <Label Text="Select Theme" TextColor="{DynamicResource TextColor}" FontSize="{DynamicResource MediumFontSize}" />
         <Switch x:Name="ThemeSwitch" Toggled="OnThemeToggled" />
-        <Label Text="Font Size" FontSize="18" />
-        <Slider Minimum="12" Maximum="20" ValueChanged="OnFontSizeChanged" />
+
+        <Label Text="Font Size" TextColor="{DynamicResource TextColor}" FontSize="{DynamicResource MediumFontSize}" />
+        <Slider x:Name="FontSizeSlider" Minimum="12" Maximum="24" ValueChanged="OnFontSizeChanged" />
     </StackLayout>
 </ContentPage>

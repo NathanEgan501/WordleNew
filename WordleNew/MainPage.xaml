@@ -11,10 +11,11 @@
                HorizontalOptions="Center" />
 
         <Button Text="Settings"
+                FontSize="{DynamicResource MediumFontSize}"
                 Clicked="OnSettingsButtonClicked" />
 
         <Label x:Name="MessageLabel"
-               FontSize="18"
+               FontSize="{DynamicResource MediumFontSize}"
                HorizontalOptions="Center"
                TextColor="{DynamicResource TextColor}" />
 
@@ -75,12 +76,20 @@
 
         <Entry x:Name="GuessEntry"
                Placeholder="Enter your guess"
-               FontSize="24"
+               FontSize="{DynamicResource MediumFontSize}"
                HorizontalOptions="FillAndExpand" />
 
         <Button Text="Submit Guess"
-                FontSize="24"
+                FontSize="{DynamicResource MediumFontSize}"
                 Clicked="OnSubmitGuessClicked" />
+
+        <Button Text="Start New Game" 
+                FontSize="{DynamicResource MediumFontSize}"
+                Clicked="OnStartNewGameClicked" />
+
+        <Button Text="View History" 
+                FontSize="{DynamicResource MediumFontSize}"
+                Clicked="OnViewHistoryClicked" />
 
     </StackLayout>
 
