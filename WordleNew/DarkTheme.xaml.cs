@@ -7,7 +7,9 @@ namespace WordleNew
 
         public DarkTheme()
         {
-           
+            this.Add("BackgroundColor", Colors.Black);
+            this.Add("TextColor", Colors.White);
+            this.Add("MediumFontSize", 18.0);
         }
     }
 }

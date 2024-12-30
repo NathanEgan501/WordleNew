@@ -16,7 +16,7 @@
         <Label x:Name="MessageLabel"
                FontSize="18"
                HorizontalOptions="Center"
-               TextColor="Black" />
+               TextColor="{DynamicResource TextColor}" />
 
         <Grid x:Name="GuessGrid"
               RowSpacing="10"
